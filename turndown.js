@@ -155,7 +155,8 @@ function childrenToMarkdown(node, ctx) {
 }
 
 function liToMarkdown(li, ctx) {
-  let text = "";
+  let inlineText = "";
+  let nestedText = "";
   for (const child of li.childNodes) {
     const tag = child.nodeType === Node.ELEMENT_NODE ? child.tagName.toLowerCase() : null;
     if (tag === "ul" || tag === "ol") {
@@ -172,12 +173,12 @@ function liToMarkdown(li, ctx) {
           items.push(indent + bullet + inner);
         }
       }
-      text += "\n" + items.join("\n");
+      nestedText += "\n" + items.join("\n");
     } else {
-      text += nodeToMarkdown(child, ctx);
+      inlineText += nodeToMarkdown(child, ctx);
     }
   }
-  return text.replace(/\s+/g, " ").trim();
+  return inlineText.replace(/ +/g, " ").trim() + nestedText;
 }
 
 function getLang(node) {
@@ -192,7 +193,7 @@ function tableToMarkdown(table) {
   for (const row of table.querySelectorAll("tr")) {
     const cells = [];
     for (const cell of row.querySelectorAll("th, td")) {
-      cells.push(inline(cell).replace(/\|/g, "\\|"));
+      cells.push(inline(cell).replace(/\\/g, "\\\\").replace(/\|/g, "\\|"));
     }
     rows.push(cells);
   }

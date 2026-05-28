@@ -27,7 +27,8 @@ copyBtn.addEventListener("click", async () => {
     const { title, url, html } = results[0].result;
 
     const markdown = htmlToMarkdown(html);
-    const fullMarkdown = "# " + title + "\n\n" + url + "\n\n" + markdown;
+    const escapedTitle = title.replace(/[\\`*_{}[\]<>()#+\-.!|]/g, "\\$&");
+    const fullMarkdown = "# " + escapedTitle + "\n\n" + url + "\n\n" + markdown;
 
     await navigator.clipboard.writeText(fullMarkdown);
     setStatus("Copied!", "success");
