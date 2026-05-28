@@ -16,7 +16,12 @@ function htmlToMarkdown(html) {
 function nodeToMarkdown(node, ctx) {
   if (node.nodeType === Node.TEXT_NODE) {
     const text = node.textContent;
-    // Preserve whitespace structure but avoid spurious newlines inside inline contexts
+    // Inside pre/code, preserve whitespace as-is; elsewhere collapse newlines to spaces
+    const parent = node.parentElement;
+    const parentTag = parent ? parent.tagName.toLowerCase() : "";
+    if (parentTag === "pre" || parentTag === "code") {
+      return text;
+    }
     return text.replace(/\n/g, " ");
   }
 
